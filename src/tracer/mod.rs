@@ -8,10 +8,13 @@
 //! - [`ringbuf`] defines the wire layout of ring buffer events and a
 //!   thin helper for consuming them.
 //! - [`pidtree`] exposes a snapshot of the currently-tracked PID set.
+//! - [`run`] is the implementation of `profile run`, kept here so that
+//!   the CLI module stays thin.
 
 pub mod attach;
 pub mod pidtree;
 pub mod ringbuf;
+pub mod run;
 
 use std::mem::MaybeUninit;
 use std::time::Duration;

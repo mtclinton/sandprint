@@ -10,6 +10,8 @@
 //! - [`syscalls`] resolves syscall numbers to architecture-specific names.
 //! - [`profile`] renders captured traces into one of several output
 //!   formats (OCI seccomp, systemd, C header, JSON).
+//! - [`cli`] is the clap-derived command-line surface.
+//!
 //! The [`tracer`] module is usable independently of the CLI by callers
 //! that want to embed the tracer into their own tooling.
 //!
@@ -22,6 +24,7 @@
 
 #![deny(rust_2018_idioms)]
 
+pub mod cli;
 pub mod profile;
 pub mod syscalls;
 pub mod tracer;
