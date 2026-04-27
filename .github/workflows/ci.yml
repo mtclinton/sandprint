@@ -1,0 +1,91 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+
+jobs:
+  fmt:
+    name: rustfmt
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+      - run: cargo fmt --all -- --check
+
+  clippy:
+    name: clippy
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      - name: install system deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang libelf-dev zlib1g-dev linux-libc-dev
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo clippy --all-targets --all-features -- -D warnings
+
+  test:
+    name: test (${{ matrix.os }} / ${{ matrix.rust }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            rust: stable
+          - os: ubuntu-24.04
+            rust: stable
+          - os: ubuntu-24.04
+            rust: "1.82"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.rust }}
+      - name: install system deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang libelf-dev zlib1g-dev linux-libc-dev
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo build --all-targets
+      - run: cargo test --all-targets
+
+  fedora:
+    name: test (fedora 40 / stable)
+    runs-on: ubuntu-24.04
+    container: fedora:40
+    steps:
+      - uses: actions/checkout@v4
+      - name: install system deps
+        run: |
+          dnf install -y clang elfutils-libelf-devel zlib-devel kernel-headers gcc make pkgconf curl git
+      - name: install rust toolchain
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
+            | sh -s -- -y --default-toolchain stable --profile minimal
+          echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
+      - run: cargo build --all-targets
+      - run: cargo test --all-targets
+
+  cross-aarch64:
+    name: cross-compile aarch64
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: install cross
+        run: cargo install cross --locked
+      - uses: Swatinem/rust-cache@v2
+      - run: cross build --target aarch64-unknown-linux-gnu --all-targets
