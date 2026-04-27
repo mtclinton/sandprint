@@ -1,0 +1,12 @@
+/target
+**/*.rs.bk
+*.pdb
+*.swp
+*.swo
+.DS_Store
+.idea/
+.vscode/
+*.profraw
+*.gcda
+*.gcno
+perf.data*
