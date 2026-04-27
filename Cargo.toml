@@ -48,8 +48,13 @@ libbpf-cargo = { version = "0.24", features = ["default"] }
 
 [dev-dependencies]
 assert_cmd = "2"
+criterion = { version = "0.5", default-features = false, features = ["cargo_bench_support"] }
 predicates = "3"
 tempfile = "3"
+
+[[bench]]
+name = "ringbuf_consumer"
+harness = false
 
 [profile.release]
 lto = "thin"
