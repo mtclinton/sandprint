@@ -144,9 +144,11 @@ The following are intentionally out of scope for the initial release:
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). The CI matrix exercises x86_64 and
-aarch64 across Ubuntu 22.04, Ubuntu 24.04, and Fedora 40 on the latest
-stable Rust and the MSRV.
+See [CONTRIBUTING.md](CONTRIBUTING.md). CI runs fmt, clippy, and the
+test suite on x86_64 across Ubuntu 22.04, Ubuntu 24.04, and Fedora 40,
+on the latest stable Rust plus the MSRV. aarch64 is supported but not
+currently gated in CI; see the comment in
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) for context.
 
 ## Security
 

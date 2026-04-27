@@ -20,8 +20,9 @@ jobs:
         include:
           - target: x86_64-unknown-linux-gnu
             cross: false
-          - target: aarch64-unknown-linux-gnu
-            cross: true
+          # aarch64 release artifact is produced manually for now; see
+          # ci.yml for the rationale (cross-rs base image is too old
+          # for BPF_MAP_TYPE_RINGBUF UAPI).
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
