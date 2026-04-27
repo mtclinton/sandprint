@@ -10,10 +10,13 @@
 //! - [`pidtree`] exposes a snapshot of the currently-tracked PID set.
 //! - [`run`] is the implementation of `profile run`, kept here so that
 //!   the CLI module stays thin.
+//! - [`attach_pid`] is the analogous implementation of `profile attach`
+//!   (registering an existing PID rather than launching a child).
 //! - [`output`] is internal: shared trace-construction and summary
 //!   printing helpers.
 
 pub mod attach;
+pub mod attach_pid;
 pub(crate) mod output;
 pub mod pidtree;
 pub mod ringbuf;
