@@ -88,4 +88,11 @@ jobs:
       - name: install cross
         run: cargo install cross --locked
       - uses: Swatinem/rust-cache@v2
-      - run: cross build --target aarch64-unknown-linux-gnu --all-targets
+      - name: cross build (aarch64)
+        env:
+          # libbpf-sys's build script calls pkg-config to locate libelf
+          # and zlib. For a cross-compile we restrict the search to the
+          # target arch's multiarch path and explicitly opt in.
+          PKG_CONFIG_ALLOW_CROSS: "1"
+          PKG_CONFIG_LIBDIR: /usr/lib/aarch64-linux-gnu/pkgconfig
+        run: cross build --target aarch64-unknown-linux-gnu --all-targets
