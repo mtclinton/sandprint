@@ -95,7 +95,7 @@ fn child_main(read_fd: OwnedFd, argv: &[CString]) -> ! {
     }
 
     let err = std::io::Error::last_os_error();
-    let msg = format!("syscall-profiler: failed to exec target: {err}\n");
+    let msg = format!("sandprint: failed to exec target: {err}\n");
     unsafe {
         libc::write(libc::STDERR_FILENO, msg.as_ptr().cast(), msg.len());
         libc::_exit(127)

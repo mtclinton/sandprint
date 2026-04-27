@@ -1,4 +1,4 @@
-# syscall-profiler
+# sandprint
 
 Generate a tight seccomp allowlist profile for any Linux process by observing
 the syscalls it actually invokes. Built on libbpf-rs and CO-RE eBPF, so the
@@ -9,7 +9,7 @@ tool runs unchanged across kernels with BTF.
 Hand-written seccomp profiles are tedious and almost always either too tight
 (your service breaks the first time it hits an uncovered syscall) or too
 loose (you copied the Docker default and now `mount` is in your allowlist).
-syscall-profiler watches a process during a representative run, records
+sandprint watches a process during a representative run, records
 every syscall it invokes, and emits a minimum-viable profile that you can
 drop into a container runtime, systemd unit, or sandbox tool. Because the
 profile reflects observed behavior rather than a guess, it tends to be
@@ -18,9 +18,9 @@ materially smaller than off-the-shelf defaults.
 ## Demo
 
 ```text
-$ sudo syscall-profiler profile run --output curl.json -- curl -s https://example.com
+$ sudo sandprint profile run --output curl.json -- curl -s https://example.com
 ... 1.2 seconds, 47 unique syscalls observed ...
-$ syscall-profiler profile generate --input curl.json --format oci > curl-seccomp.json
+$ sandprint profile generate --input curl.json --format oci > curl-seccomp.json
 $ wc -l curl-seccomp.json
    71 curl-seccomp.json
 ```
@@ -43,10 +43,10 @@ MSRV on every push.
 ## Quickstart
 
 ```sh
-git clone https://github.com/mtclinton/syscall-profiler && cd syscall-profiler
+git clone https://github.com/mtclinton/sandprint && cd sandprint
 cargo build --release
-sudo setcap 'cap_bpf,cap_perfmon=eip' target/release/syscall-profiler
-target/release/syscall-profiler profile run -- ls /tmp
+sudo setcap 'cap_bpf,cap_perfmon=eip' target/release/sandprint
+target/release/sandprint profile run -- ls /tmp
 ```
 
 ## Subcommands
@@ -100,7 +100,7 @@ and [`docs/ebpf-design.md`](docs/ebpf-design.md) for verifier notes.
 | `bpftrace` | scripted eBPF | whatever you scripted | yes (with BTF) | Fantastic for ad-hoc; you write the aggregation yourself. |
 | `oci-seccomp-bpf-hook` | runtime hook + eBPF | OCI seccomp | yes | Tied to CRI-O / Podman; not usable for non-containerized workloads. |
 | `syscall2seccomp` | parses strace | OCI seccomp | yes | Inherits strace overhead; needs a separate trace step. |
-| **syscall-profiler** | libbpf-rs CO-RE eBPF | OCI / systemd / C header / JSON | yes | Single binary, no strace, follows process trees natively. |
+| **sandprint** | libbpf-rs CO-RE eBPF | OCI / systemd / C header / JSON | yes | Single binary, no strace, follows process trees natively. |
 
 Honest tradeoffs: this tool only sees what the workload actually does during
 the profiling run. If your test harness doesn't exercise an error path that
@@ -115,7 +115,7 @@ and emits a clear error if neither is granted. The recommended setup for
 development is `setcap` rather than running under sudo:
 
 ```sh
-sudo setcap 'cap_bpf,cap_perfmon=eip' /usr/local/bin/syscall-profiler
+sudo setcap 'cap_bpf,cap_perfmon=eip' /usr/local/bin/sandprint
 ```
 
 ## Why this exists

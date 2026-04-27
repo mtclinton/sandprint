@@ -1,24 +1,24 @@
 [package]
-name = "syscall-profiler"
+name = "sandprint"
 version = "0.1.0"
 edition = "2021"
 rust-version = "1.82"
 authors = ["Max <max@dockyard.navy>"]
 description = "Generate seccomp profiles from observed syscalls of a running process via eBPF"
 license = "Apache-2.0"
-repository = "https://github.com/mtclinton/syscall-profiler"
-homepage = "https://github.com/mtclinton/syscall-profiler"
-documentation = "https://docs.rs/syscall-profiler"
+repository = "https://github.com/mtclinton/sandprint"
+homepage = "https://github.com/mtclinton/sandprint"
+documentation = "https://docs.rs/sandprint"
 readme = "README.md"
 keywords = ["seccomp", "bpf", "ebpf", "syscall", "sandbox"]
 categories = ["command-line-utilities", "development-tools::profiling"]
 
 [lib]
-name = "syscall_profiler"
+name = "sandprint"
 path = "src/lib.rs"
 
 [[bin]]
-name = "syscall-profiler"
+name = "sandprint"
 path = "src/main.rs"
 
 [features]

@@ -640,6 +640,28 @@ dependencies = [
 ]
 
 [[package]]
+name = "sandprint"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "assert_cmd",
+ "clap",
+ "ctrlc",
+ "libbpf-cargo",
+ "libbpf-rs",
+ "libc",
+ "nix 0.29.0",
+ "predicates",
+ "serde",
+ "serde_json",
+ "syscalls",
+ "tempfile",
+ "thiserror 2.0.18",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "semver"
 version = "1.0.28"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -722,28 +744,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
-]
-
-[[package]]
-name = "syscall-profiler"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "assert_cmd",
- "clap",
- "ctrlc",
- "libbpf-cargo",
- "libbpf-rs",
- "libc",
- "nix 0.29.0",
- "predicates",
- "serde",
- "serde_json",
- "syscalls",
- "tempfile",
- "thiserror 2.0.18",
- "tracing",
- "tracing-subscriber",
 ]
 
 [[package]]

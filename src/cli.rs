@@ -8,7 +8,7 @@ use clap::{Args, Parser, Subcommand};
 
 #[derive(Parser, Debug)]
 #[command(
-    name = "syscall-profiler",
+    name = "sandprint",
     version,
     about = "Observe a process via eBPF and emit a tight seccomp allowlist",
     arg_required_else_help = true
@@ -46,7 +46,7 @@ pub struct RunArgs {
 
     /// The command to run, after `--`.
     ///
-    /// Example: `syscall-profiler profile run -- ls /tmp`.
+    /// Example: `sandprint profile run -- ls /tmp`.
     #[arg(last = true, required = true, num_args = 1..)]
     pub command: Vec<OsString>,
 }

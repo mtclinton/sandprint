@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for your interest in syscall-profiler. This document describes how to
+Thanks for your interest in sandprint. This document describes how to
 get a local development environment up and running, and how to send changes
 upstream.
 
@@ -8,7 +8,7 @@ upstream.
 
 Use the issue templates under `.github/ISSUE_TEMPLATE/`. For bug reports,
 include kernel version (`uname -a`), distribution, the exact invocation that
-triggered the bug, and the output of running with `RUST_LOG=syscall_profiler=debug`.
+triggered the bug, and the output of running with `RUST_LOG=sandprint=debug`.
 
 For security issues, see [SECURITY.md](SECURITY.md).
 
@@ -35,8 +35,8 @@ Tracing requires either `CAP_BPF + CAP_PERFMON` or the `CAP_SYS_ADMIN`
 fallback. The simplest way to grant these to a development build:
 
 ```sh
-sudo setcap 'cap_bpf,cap_perfmon=eip' target/debug/syscall-profiler
-target/debug/syscall-profiler profile run -- ls /tmp
+sudo setcap 'cap_bpf,cap_perfmon=eip' target/debug/sandprint
+target/debug/sandprint profile run -- ls /tmp
 ```
 
 ## Quality gates

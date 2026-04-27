@@ -17,7 +17,7 @@ disclosure timeline thereafter.
 
 ## Threat model
 
-syscall-profiler runs an eBPF program in the kernel. Loading eBPF requires
+sandprint runs an eBPF program in the kernel. Loading eBPF requires
 `CAP_BPF + CAP_PERFMON` (or `CAP_SYS_ADMIN`); the binary itself does not
 elevate privilege beyond that. The eBPF verifier rejects unsafe programs;
 the bundled BPF program is small, bounded, and contains no helper calls

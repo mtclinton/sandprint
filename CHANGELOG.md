@@ -16,4 +16,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Userspace ring buffer consumer with structured logging.
 - `profile run` subcommand: launch a command, trace it to completion, print observed syscalls and counts.
 
-[Unreleased]: https://github.com/mtclinton/syscall-profiler/compare/HEAD...HEAD
+[Unreleased]: https://github.com/mtclinton/sandprint/compare/HEAD...HEAD

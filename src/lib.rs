@@ -1,4 +1,4 @@
-//! syscall-profiler observes a process via eBPF and renders a tight
+//! sandprint observes a process via eBPF and renders a tight
 //! seccomp allowlist from the syscalls it actually invokes.
 //!
 //! # Architecture

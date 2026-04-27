@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Report a defect in syscall-profiler
+about: Report a defect in sandprint
 title: ''
 labels: bug
 assignees: ''
@@ -26,7 +26,7 @@ assignees: ''
 
 ## Environment
 
-- syscall-profiler version: `syscall-profiler --version`
+- sandprint version: `sandprint --version`
 - Kernel: `uname -a`
 - Distribution: `cat /etc/os-release | head -2`
 - BTF available: `ls -la /sys/kernel/btf/vmlinux`
@@ -34,7 +34,7 @@ assignees: ''
 
 ## Verbose output
 
-<!-- Re-run with `RUST_LOG=syscall_profiler=debug` and paste the output. -->
+<!-- Re-run with `RUST_LOG=sandprint=debug` and paste the output. -->
 
 ```text
 

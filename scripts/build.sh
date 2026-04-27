@@ -10,7 +10,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 if [[ "$PWD" == *" "* ]]; then
-    : "${CARGO_TARGET_DIR:=${TMPDIR:-/tmp}/syscall-profiler-target}"
+    : "${CARGO_TARGET_DIR:=${TMPDIR:-/tmp}/sandprint-target}"
     export CARGO_TARGET_DIR
     mkdir -p "$CARGO_TARGET_DIR"
     echo "note: project path contains whitespace; using CARGO_TARGET_DIR=$CARGO_TARGET_DIR" >&2
