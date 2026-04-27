@@ -9,7 +9,7 @@
 pre-build = [
     "dpkg --add-architecture $CROSS_DEB_ARCH",
     "apt-get update",
-    "apt-get install --assume-yes libelf-dev:$CROSS_DEB_ARCH zlib1g-dev:$CROSS_DEB_ARCH pkg-config",
+    "apt-get install --assume-yes pkg-config libelf-dev:$CROSS_DEB_ARCH zlib1g-dev:$CROSS_DEB_ARCH linux-libc-dev:$CROSS_DEB_ARCH",
 ]
 
 [target.aarch64-unknown-linux-gnu.env]
