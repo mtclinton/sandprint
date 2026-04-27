@@ -2,8 +2,6 @@
 //! target process suspended, registers it with the tracker, releases
 //! the child, and consumes events until the child exits.
 
-use std::ffi::OsString;
-use std::io::Write;
 use std::mem::MaybeUninit;
 use std::path::Path;
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -14,42 +12,15 @@ use anyhow::{Context, Result};
 use libbpf_rs::{OpenObject, RingBufferBuilder};
 use nix::sys::signal::{kill, Signal};
 use nix::sys::wait::{waitpid, WaitPidFlag, WaitStatus};
-use serde::Serialize;
 use tracing::{info, warn};
 
 use crate::cli::RunArgs;
-use crate::syscalls;
 use crate::tracer::attach::spawn_suspended;
+use crate::tracer::output::{build_trace, print_summary};
 use crate::tracer::ringbuf::SyscallEvent;
 use crate::tracer::{Tracer, TracerConfig};
 
 static SHUTDOWN: AtomicBool = AtomicBool::new(false);
-
-#[derive(Serialize, Debug)]
-struct TraceFile {
-    schema_version: u32,
-    arch: String,
-    target_argv: Vec<String>,
-    events: Vec<TraceEvent>,
-    counts: Vec<TraceCount>,
-}
-
-#[derive(Serialize, Debug)]
-struct TraceEvent {
-    timestamp_ns: u64,
-    tgid: u32,
-    tid: u32,
-    syscall_nr: u32,
-    syscall_name: Option<String>,
-    comm: String,
-}
-
-#[derive(Serialize, Debug)]
-struct TraceCount {
-    syscall_nr: u32,
-    syscall_name: Option<String>,
-    count: u64,
-}
 
 pub fn run(args: RunArgs) -> Result<()> {
     let config = TracerConfig {
@@ -120,68 +91,28 @@ pub fn run(args: RunArgs) -> Result<()> {
         let _ = rb.poll(Duration::from_millis(50));
     }
 
-    let events_vec = collected.lock().expect("collected mutex poisoned");
+    let events = collected.lock().expect("collected mutex poisoned");
     let counts = tracer.syscall_counts()?;
 
-    print_summary(&events_vec, &counts);
+    print_summary(events.len(), &counts);
 
     if let Some(path) = args.output.as_deref() {
-        write_trace(path, &args.command, &events_vec, &counts)?;
+        let argv: Vec<String> =
+            args.command.iter().map(|s| s.to_string_lossy().into_owned()).collect();
+        write_trace(path, &argv, &events, &counts)?;
         info!(path = %path.display(), "wrote trace");
     }
 
     Ok(())
 }
 
-fn print_summary(events: &[SyscallEvent], counts: &[(u32, u64)]) {
-    let mut out = std::io::stdout().lock();
-    let _ = writeln!(
-        out,
-        "Observed {} syscall events ({} unique syscalls)",
-        events.len(),
-        counts.len()
-    );
-    let _ = writeln!(out);
-    let _ = writeln!(out, "{:>5}  {:>10}  NAME", "NR", "COUNT");
-    for (nr, count) in counts {
-        let name = syscalls::name(*nr).unwrap_or("?");
-        let _ = writeln!(out, "{nr:>5}  {count:>10}  {name}");
-    }
-}
-
 fn write_trace(
     path: &Path,
-    argv: &[OsString],
+    argv: &[String],
     events: &[SyscallEvent],
     counts: &[(u32, u64)],
 ) -> Result<()> {
-    let trace = TraceFile {
-        schema_version: 1,
-        arch: syscalls::host_arch().to_string(),
-        target_argv: argv
-            .iter()
-            .map(|s| s.to_string_lossy().into_owned())
-            .collect(),
-        events: events
-            .iter()
-            .map(|e| TraceEvent {
-                timestamp_ns: e.timestamp_ns,
-                tgid: e.tgid,
-                tid: e.tid,
-                syscall_nr: e.syscall_nr,
-                syscall_name: syscalls::name(e.syscall_nr).map(String::from),
-                comm: e.comm_str().into_owned(),
-            })
-            .collect(),
-        counts: counts
-            .iter()
-            .map(|(nr, c)| TraceCount {
-                syscall_nr: *nr,
-                syscall_name: syscalls::name(*nr).map(String::from),
-                count: *c,
-            })
-            .collect(),
-    };
+    let trace = build_trace(argv, events, counts);
     let f = std::fs::File::create(path).context("create trace file")?;
     serde_json::to_writer_pretty(f, &trace).context("serialize trace")?;
     Ok(())
