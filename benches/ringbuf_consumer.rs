@@ -38,8 +38,7 @@ fn parse_and_collect(payload: &[u8]) -> Vec<SyscallEvent> {
         // SAFETY: `chunk.len() == EVENT_SIZE` and `SyscallEvent` is
         // `#[repr(C)]` with no invalid bit patterns — every byte
         // sequence of the right length is a valid event.
-        let evt =
-            unsafe { std::ptr::read_unaligned(chunk.as_ptr() as *const SyscallEvent) };
+        let evt = unsafe { std::ptr::read_unaligned(chunk.as_ptr() as *const SyscallEvent) };
         events.push(evt);
     }
     events

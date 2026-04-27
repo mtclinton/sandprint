@@ -15,7 +15,13 @@ pub fn merge(traces: &[Trace]) -> Result<Trace, ProfileError> {
     let arch = traces[0].arch.clone();
     let mismatched: Vec<String> = traces
         .iter()
-        .filter_map(|t| if t.arch != arch { Some(t.arch.clone()) } else { None })
+        .filter_map(|t| {
+            if t.arch != arch {
+                Some(t.arch.clone())
+            } else {
+                None
+            }
+        })
         .collect();
     if !mismatched.is_empty() {
         let mut all = vec![arch];
@@ -26,7 +32,9 @@ pub fn merge(traces: &[Trace]) -> Result<Trace, ProfileError> {
     let mut by_nr: HashMap<u32, (Option<String>, u64)> = HashMap::new();
     for t in traces {
         for c in &t.counts {
-            let entry = by_nr.entry(c.syscall_nr).or_insert((c.syscall_name.clone(), 0));
+            let entry = by_nr
+                .entry(c.syscall_nr)
+                .or_insert((c.syscall_name.clone(), 0));
             if entry.0.is_none() {
                 entry.0 = c.syscall_name.clone();
             }
@@ -36,7 +44,11 @@ pub fn merge(traces: &[Trace]) -> Result<Trace, ProfileError> {
 
     let mut counts: Vec<TraceCount> = by_nr
         .into_iter()
-        .map(|(nr, (name, count))| TraceCount { syscall_nr: nr, syscall_name: name, count })
+        .map(|(nr, (name, count))| TraceCount {
+            syscall_nr: nr,
+            syscall_name: name,
+            count,
+        })
         .collect();
     counts.sort_by_key(|c| std::cmp::Reverse(c.count));
 

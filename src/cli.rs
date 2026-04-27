@@ -133,10 +133,10 @@ fn generate_action(args: GenerateArgs) -> Result<()> {
 }
 
 fn diff_action(args: DiffArgs) -> Result<()> {
-    let a = profile::load_trace(&args.a)
-        .with_context(|| format!("loading {}", args.a.display()))?;
-    let b = profile::load_trace(&args.b)
-        .with_context(|| format!("loading {}", args.b.display()))?;
+    let a =
+        profile::load_trace(&args.a).with_context(|| format!("loading {}", args.a.display()))?;
+    let b =
+        profile::load_trace(&args.b).with_context(|| format!("loading {}", args.b.display()))?;
     let d = profile::diff::diff(&a, &b);
     let s = d.render(&args.a.display().to_string(), &args.b.display().to_string());
     let mut out = std::io::stdout().lock();

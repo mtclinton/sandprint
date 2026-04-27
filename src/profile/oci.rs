@@ -19,7 +19,10 @@ pub fn emit(trace: &Trace) -> Result<String, ProfileError> {
         default_action: "SCMP_ACT_ERRNO",
         default_errno_ret: 1,
         architectures: vec![arch_token.to_string()],
-        syscalls: vec![OciSyscallRule { names, action: "SCMP_ACT_ALLOW" }],
+        syscalls: vec![OciSyscallRule {
+            names,
+            action: "SCMP_ACT_ALLOW",
+        }],
     };
     serde_json::to_string_pretty(&oci).map_err(ProfileError::Json)
 }

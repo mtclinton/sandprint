@@ -108,7 +108,12 @@ mod tests {
     fn unique_names_are_sorted_and_deduped() {
         let t = fake_trace(
             "x86_64",
-            &[(0, "read", 5), (1, "write", 3), (3, "close", 1), (0, "read", 7)],
+            &[
+                (0, "read", 5),
+                (1, "write", 3),
+                (3, "close", 1),
+                (0, "read", 7),
+            ],
         );
         let names = t.unique_syscall_names();
         assert_eq!(names, vec!["close", "read", "write"]);
@@ -131,7 +136,10 @@ mod tests {
     #[test]
     fn oci_unsupported_arch_errors() {
         let t = fake_trace("riscv64", &[(0, "read", 1)]);
-        assert!(matches!(oci::emit(&t), Err(ProfileError::UnsupportedArch(_))));
+        assert!(matches!(
+            oci::emit(&t),
+            Err(ProfileError::UnsupportedArch(_))
+        ));
     }
 
     #[test]
@@ -157,6 +165,9 @@ mod tests {
     fn merge_rejects_arch_mismatch() {
         let a = fake_trace("x86_64", &[(0, "read", 1)]);
         let b = fake_trace("aarch64", &[(0, "read", 1)]);
-        assert!(matches!(merge::merge(&[a, b]), Err(ProfileError::ArchMismatch(_))));
+        assert!(matches!(
+            merge::merge(&[a, b]),
+            Err(ProfileError::ArchMismatch(_))
+        ));
     }
 }

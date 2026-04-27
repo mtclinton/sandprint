@@ -97,8 +97,11 @@ pub fn run(args: RunArgs) -> Result<()> {
     print_summary(events.len(), &counts);
 
     if let Some(path) = args.output.as_deref() {
-        let argv: Vec<String> =
-            args.command.iter().map(|s| s.to_string_lossy().into_owned()).collect();
+        let argv: Vec<String> = args
+            .command
+            .iter()
+            .map(|s| s.to_string_lossy().into_owned())
+            .collect();
         write_trace(path, &argv, &events, &counts)?;
         info!(path = %path.display(), "wrote trace");
     }
